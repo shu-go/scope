@@ -28,7 +28,7 @@ func New(begin interface{}, end func()) scope {
 //	   tx.Exec(...)
 //	   // auto commit!
 //	 })
-func (s scope) Block(body interface{}, argsForBegin ...interface{}) {
+func (s scope) Block(body interface{}, beginArgs ...interface{}) {
 	bodyv := reflect.ValueOf(body)
 	bodyt := bodyv.Type()
 	if bodyt.Kind() != reflect.Func {
@@ -38,7 +38,7 @@ func (s scope) Block(body interface{}, argsForBegin ...interface{}) {
 	beginv := reflect.ValueOf(s.begin)
 	begint := beginv.Type()
 
-	if len(argsForBegin) != begint.NumIn() {
+	if len(beginArgs) != begint.NumIn() {
 		panic("mismatch of args and begin")
 	}
 
@@ -52,7 +52,7 @@ func (s scope) Block(body interface{}, argsForBegin ...interface{}) {
 	}
 
 	var argsv []reflect.Value
-	for _, i := range argsForBegin {
+	for _, i := range beginArgs {
 		argsv = append(argsv, reflect.ValueOf(i))
 	}
 	retv := beginv.Call(argsv)
@@ -74,16 +74,16 @@ func (s scope) Block(body interface{}, argsForBegin ...interface{}) {
 //   {
 //	    defer DoneCommitted()() // DOUBLE (), first to call begin, second to defer end
 //   }
-func (s scope) Done(argsForBegin ...interface{}) func() {
+func (s scope) Done(beginArgs ...interface{}) func() {
 	beginv := reflect.ValueOf(s.begin)
 	begint := beginv.Type()
 
-	if len(argsForBegin) != begint.NumIn() {
+	if len(beginArgs) != begint.NumIn() {
 		panic("mismatch of args and begin")
 	}
 
 	var argsv []reflect.Value
-	for _, i := range argsForBegin {
+	for _, i := range beginArgs {
 		argsv = append(argsv, reflect.ValueOf(i))
 	}
 	beginv.Call(argsv)
