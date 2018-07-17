@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"bitbucket.org/shu/gotwant"
-	"bitbucket.org/shu/scope"
+	"bitbucket.org/shu_go/gotwant"
+	"bitbucket.org/shu_go/scope"
 )
 
 func TestDone(t *testing.T) {
